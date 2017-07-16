@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using System.Threading;
-
+using ApplicationLogic;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Auth.OAuth2.Responses;
 using Google.Apis.Sheets.v4;
@@ -25,7 +25,7 @@ namespace GoogleSheetsAPITesting
 			Console.WriteLine("===================================");
 			try
 			{
-				new Program().Run().Wait();
+				new SheetsAccess().Run().Wait();
 
 			}
 			catch (AggregateException ex)
@@ -40,39 +40,6 @@ namespace GoogleSheetsAPITesting
 			Console.ReadKey();
 		}
 
-		private async Task Run()
-		{
-			//create credential
-			UserCredential credential;
-			credential = await GoogleWebAuthorizationBroker.AuthorizeAsync(new ClientSecrets()
-			{
-				ClientId = "876944923425-6cdvrf8ls90fpnf0crb9kkmnedd2ojat.apps.googleusercontent.com",
-				ClientSecret = "6aS9xgysd8G1lXHfGEQo7XlP"
-			}, new[] {SheetsService.Scope.Spreadsheets}, "user", CancellationToken.None);
-
-			var service = new SheetsService(new BaseClientService.Initializer()
-			{
-				HttpClientInitializer = credential,
-				ApplicationName = "Sheets API Test"
-			});
-
-			//List Responses
-			await ListSheets(service);
-
-		}
-
-		private async Task ListSheets(SheetsService service)
-		{
-			var sheetdata = await service.Spreadsheets.Values.Get("1G1q3htVrxga_FEO-UvQ0BYFAli64WIBbonFym7VS0MA", "A1:QN")
-				.ExecuteAsync();
-				
-			//get last row method
-				Console.WriteLine(sheetdata.Values.Count);
-
-			//write data
-				Console.WriteLine( JsonConvert.SerializeObject(sheetdata.Values.First()) );
-
-		}
-
+		
 	}
 }
