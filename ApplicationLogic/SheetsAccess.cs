@@ -81,7 +81,7 @@ namespace ApplicationLogic
 				result.Add(obj);
 			}
 
-			Console.WriteLine(result.ToString());
+			//Console.WriteLine(result.ToString());
 
 
 
