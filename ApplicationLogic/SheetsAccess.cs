@@ -57,6 +57,7 @@ namespace ApplicationLogic
 
 		private async Task GetApplications(SheetsService service)
 		{
+			const string filePath = @"//files.biola.edu/LibraryCircAccess/Software/Applicants/data/imports/applicantimports.txt";
 			//get sheet data
 			var sheetData = await service.Spreadsheets.Values.Get("1gf8fqSEYNCfr28aU_fHTvO8IED1C77MwhVmSbpoBF6c", "A1:BD").ExecuteAsync();
 
@@ -82,8 +83,7 @@ namespace ApplicationLogic
 			}
 
 			//Console.WriteLine(result.ToString());
-
-
+			System.IO.File.WriteAllText(filePath, result.ToString());
 
 			//set up
 			/*
