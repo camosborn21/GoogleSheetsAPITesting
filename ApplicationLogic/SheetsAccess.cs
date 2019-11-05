@@ -40,7 +40,7 @@ namespace ApplicationLogic
 				ApplicationName = "Sheets API Test"
 			});
 
-			//List Responses
+			//TestAnswerKey();
 			await GetTestData(service);
 			//await GetApplications(service);
 			
@@ -50,10 +50,10 @@ namespace ApplicationLogic
 		{
 			Console.WriteLine("Loading Answer Key");
 			string answerkeyFile = outputFilePath + "answerkey.json";
-			JArray answerKey = JArray.Parse(System.IO.File.ReadAllText(answerkeyFile));
-			
-			//answerKey
+			JObject answerKey = JObject.Parse(System.IO.File.ReadAllText(answerkeyFile));
 
+			//answerKey
+			Console.WriteLine(answerKey["answers"]["name_test"]["name_1"]);
 
 
 		}
@@ -82,7 +82,7 @@ namespace ApplicationLogic
 			//Load Answer Key
 			Console.WriteLine("Loading Answer Key");
 			string answerkeyFile = outputFilePath + "answerkey.json";
-			JArray answerKey = JArray.Parse(System.IO.File.ReadAllText(answerkeyFile));
+			JObject answerKey = JObject.Parse(System.IO.File.ReadAllText(answerkeyFile));
 
 
 
@@ -107,6 +107,10 @@ namespace ApplicationLogic
 				}
 				test["metadata"] = metadata;
 
+				JObject grades = new JObject();
+				int namesGrade = 0;
+				int numbersGrade = 0;
+				int alphaGrade = 0;
 
 				JObject answers = new JObject();
 
@@ -114,27 +118,53 @@ namespace ApplicationLogic
 				JObject nameAnswers = new JObject();
 				for(var names = 6; names < 156; names++)
 				{
-					nameAnswers[NormalizeJsonHeader(headers[names].ToString())] = row[names].ToString();
+					string key = NormalizeJsonHeader(headers[names].ToString());
+					nameAnswers[key] = row[names].ToString();
+					if(answerKey["answers"]["name_test"][key].ToString() == row[names].ToString())
+					{
+						namesGrade += 1;
+					}
 				}
 				answers["name_test"] = nameAnswers;
+				grades["names"] = namesGrade;
 
 				//create number answers suboject and add to test
 				JObject numberAnswers = new JObject();
 				for(var nums = 156; nums < 306; nums++)
 				{
-					numberAnswers[NormalizeJsonHeader(headers[nums].ToString())] = row[nums].ToString();
+					string key = NormalizeJsonHeader(headers[nums].ToString());
+					numberAnswers[key] = row[nums].ToString();
+					if (answerKey["answers"]["number_test"][key].ToString() == row[nums].ToString())
+					{
+						numbersGrade += 1;
+					}
 				}
 				answers["number_test"] = numberAnswers;
+				grades["numbers"] = numbersGrade;
+
 
 				//create alpha answers subobject and add to test
 				JObject alphaAnswers = new JObject();
 				for(var alphas = 306; alphas < 456; alphas++)
 				{
-					alphaAnswers[NormalizeJsonHeader(headers[alphas].ToString())] = row[alphas].ToString();
+					string key = NormalizeJsonHeader(headers[alphas].ToString());
+					alphaAnswers[key] = row[alphas].ToString();
+					if (answerKey["answers"]["alphabetizing_test"][key].ToString() == row[alphas].ToString())
+					{
+						alphaGrade += 1;
+					}
 				}
 				answers["alphabetizing_test"] = alphaAnswers;
-				test["answers"] = answers;
+				grades["alphabetizing"] = alphaGrade;
+				int total = namesGrade + numbersGrade + alphaGrade;
+				grades["total"] = total;
+				int missed = 450 - total;
+				grades["missed"] = missed;
+				double percent = ((50-missed) / 50);
+				grades["percent"] = percent;
 
+				test["answers"] = answers;
+				test["grades"] = grades;
 
 
 				//Add the formatted JSON for this test to the result array
