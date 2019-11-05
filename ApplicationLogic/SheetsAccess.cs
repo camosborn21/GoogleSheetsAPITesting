@@ -40,22 +40,9 @@ namespace ApplicationLogic
 				ApplicationName = "Sheets API Test"
 			});
 
-			//TestAnswerKey();
 			await GetTestData(service);
-			//await GetApplications(service);
+			await GetApplications(service);
 			
-		}
-
-		private void TestAnswerKey()
-		{
-			Console.WriteLine("Loading Answer Key");
-			string answerkeyFile = outputFilePath + "answerkey.json";
-			JObject answerKey = JObject.Parse(System.IO.File.ReadAllText(answerkeyFile));
-
-			//answerKey
-			Console.WriteLine(answerKey["answers"]["name_test"]["name_1"]);
-
-
 		}
 
 
@@ -89,7 +76,6 @@ namespace ApplicationLogic
 			Console.WriteLine("Formatting JSON data");
 			JArray result = new JArray();
 			JArray headers = data[0].ToObject<JArray>();
-
 			for (var i = 2; i < data.Count(); i++)
 			{
 				//get row data
@@ -156,6 +142,8 @@ namespace ApplicationLogic
 				}
 				answers["alphabetizing_test"] = alphaAnswers;
 				grades["alphabetizing"] = alphaGrade;
+
+				//Add Grade summary data
 				int total = namesGrade + numbersGrade + alphaGrade;
 				grades["total"] = total;
 				int missed = 450 - total;
@@ -176,11 +164,6 @@ namespace ApplicationLogic
 			Console.WriteLine(String.Format("Writing test data to: {0}", testdataFile));
 			System.IO.File.WriteAllText(testdataFile, result.ToString());
 
-			//get last row method
-			//Console.WriteLine(sheetdata.Values.Count);
-
-			//write data
-			//Console.WriteLine(JsonConvert.SerializeObject(sheetdata.Values, Formatting.Indented));
 
 		}
 
