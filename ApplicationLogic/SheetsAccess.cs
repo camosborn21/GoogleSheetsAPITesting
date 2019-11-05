@@ -160,7 +160,7 @@ namespace ApplicationLogic
 				grades["total"] = total;
 				int missed = 450 - total;
 				grades["missed"] = missed;
-				double percent = ((50-missed) / 50);
+				double percent = (100-(missed*2));
 				grades["percent"] = percent;
 
 				test["answers"] = answers;
