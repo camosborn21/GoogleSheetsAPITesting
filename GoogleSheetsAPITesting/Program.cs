@@ -20,8 +20,8 @@ namespace GoogleSheetsAPITesting
 	class Program
 	{
 		static void Main(string[] args)
-		{
-			Console.WriteLine("Sheets API Sample: Get Test Results");
+		{ 
+			Console.WriteLine("Import Applicant Data and Test Results from Google Sheets");
 			Console.WriteLine("===================================");
 			try
 			{
@@ -35,7 +35,7 @@ namespace GoogleSheetsAPITesting
 					Console.WriteLine("Error: " + e.Message);
 				}
 			}
-
+			Console.WriteLine("Import complete");
 			Console.WriteLine("Press any key to continue...");
 			Console.ReadKey();
 		}
